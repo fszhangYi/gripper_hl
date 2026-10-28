@@ -1,0 +1,28 @@
+# hik-sensors — 慧灵 Z-EFG-C65 only (standalone host)
+# Windows live: dry_run false + endpoint COM port (e.g. COM9)
+version: 1
+site: gripper-hl-host
+dry_run: true
+
+defaults:
+  gripper_huiling:
+    baudrate: 115200
+    slave_id: 1
+    timeout_ms: 300
+    default_speed_mm_s: 50
+    default_current_a: 0.3
+    init_on_open: false
+    position_min_mm: 0.0
+    position_max_mm: 65.0
+
+devices:
+  - id: gripper-huiling
+    kind: gripper_huiling
+    name: "慧灵 Z-EFG-C65"
+    endpoint: "COM4"
+    params:
+      baudrate: 115200
+      slave_id: 1
+      default_speed_mm_s: 50
+      default_current_a: 0.3
+      init_on_open: false

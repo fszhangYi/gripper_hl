@@ -1,0 +1,11 @@
+# gripper_hl host runtime
+version: 1
+site: gripper-hl-host
+sensors_config: ./sensors_gripper.yaml
+dry_run: true
+sensor_id: gripper-huiling
+
+runtime:
+  sample_hz: 20
+  web_host: "127.0.0.1"
+  web_port: 7021

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gripper HL · 慧灵 C65</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="hl-page">
+  <header class="hl-header">
+    <h1 class="brand">Gripper HL</h1>
+    <p class="sub">慧灵 Z-EFG-C65 · hik-sensors <code>gripper_huiling</code> · 对齐 huiling_clean 控制语义</p>
+  </header>
+
+  <section class="card config-paths">
+    <h2>已加载配置（只读）</h2>
+    <div class="path-row"><span class="k">host</span><code id="hostConfigPath" class="path">—</code></div>
+    <div class="path-row"><span class="k">sensors</span><code id="sensorsConfigPath" class="path">—</code></div>
+  </section>
+
+  <section class="toolbar">
+    <label class="chk"><input type="checkbox" id="dryRun" checked /> dry_run</label>
+    <button type="button" id="btnConnect" class="primary">连接</button>
+    <button type="button" id="btnDisconnect" class="ghost">断开</button>
+    <button type="button" id="btnInit" class="warn">初始化 / 找零</button>
+    <button type="button" id="btnProbe" class="ghost">Probe</button>
+    <button type="button" id="btnRate" class="ghost">测速 3s</button>
+    <button type="button" id="btnPorts" class="ghost">串口列表</button>
+    <button type="button" id="btnRestart" class="ghost warn-outline">重启后端</button>
+    <span id="meta" class="meta">idle</span>
+  </section>
+
+  <section class="card remote-block">
+    <h2>远程夹爪（Gello）</h2>
+    <p class="hint">对齐 sensors-arm「远程连续下发」：拉取 <code>GET /gripper</code> 的 <code>gripper</code>（mm），连续下发本机慧灵。需先连接并初始化。</p>
+    <div class="ip-row">
+      <span class="k">URL</span>
+      <input type="text" class="v" id="remoteUrl" placeholder="http://127.0.0.1:7020/gripper" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="affine-actions">
+      <button type="button" id="btnRemoteConnect" class="ok">拉取远程</button>
+      <button type="button" id="btnRemoteDisconnect" class="ghost" disabled>停止拉取</button>
+      <button type="button" id="btnRemoteSend" class="primary" disabled title="实时远程 gripper → 慧灵 position_mm；再点停止">远程连续下发</button>
+      <span id="remoteHint" class="meta">未拉取远程</span>
+    </div>
+    <pre id="remoteBox">—</pre>
+  </section>
+
+  <section class="cards">
+    <div class="card grow">
+      <h2>开合控制</h2>
+      <p class="hint">位置 0 mm = 闭合，65 mm = 张开（手册行程）。速度 1–100 mm/s，电流 0.1–0.5 A。</p>
+      <div class="ctrl-grid">
+        <label class="field">
+          <span>目标位置 (mm)</span>
+          <div class="slider-row">
+            <input type="range" id="posRange" min="0" max="65" step="0.5" value="32.5" />
+            <input type="number" id="posNum" min="0" max="65" step="0.5" value="32.5" />
+          </div>
+        </label>
+        <label class="field">
+          <span>速度 (mm/s)</span>
+          <input type="number" id="speedNum" min="1" max="100" step="1" value="50" />
+        </label>
+        <label class="field">
+          <span>电流 (A)</span>
+          <input type="number" id="currentNum" min="0.1" max="0.5" step="0.05" value="0.3" />
+        </label>
+      </div>
+      <div class="affine-actions">
+        <button type="button" id="btnClose" class="danger">闭合 0 mm</button>
+        <button type="button" id="btnOpen" class="ok">张开 65 mm</button>
+        <button type="button" id="btnSend" class="primary">下发目标</button>
+        <span id="cmdMeta" class="meta"></span>
+      </div>
+      <div class="jaw-viz" aria-hidden="true">
+        <div class="jaw-track"><div class="jaw-fill" id="jawFill"></div></div>
+        <div class="jaw-labels"><span>闭</span><span id="jawLabel">—</span><span>开</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>实时反馈</h2>
+      <div class="stat-grid">
+        <div><span class="k">位置</span><span class="v" id="fbPos">—</span></div>
+        <div><span class="k">速度</span><span class="v" id="fbSpd">—</span></div>
+        <div><span class="k">电流</span><span class="v" id="fbCur">—</span></div>
+        <div><span class="k">初始化</span><span class="v" id="fbInit">—</span></div>
+        <div><span class="k">夹持</span><span class="v" id="fbGrip">—</span></div>
+        <div><span class="k">Hz</span><span class="v" id="fbHz">—</span></div>
+      </div>
+      <pre id="statusBox">—</pre>
+    </div>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
